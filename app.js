@@ -391,6 +391,24 @@
     startTimer();
   }
 
+  function regionTransform(region, width, height) {
+    const [[w, s], [e, n]] = region.bounds;
+    const topLeft = projection([w, n]);
+    const bottomRight = projection([e, s]);
+
+    const rw = Math.abs(bottomRight[0] - topLeft[0]);
+    const rh = Math.abs(bottomRight[1] - topLeft[1]);
+    const scale = 0.88 * Math.min(width / rw, height / rh);
+
+    const cx = (topLeft[0] + bottomRight[0]) / 2;
+    const cy = (topLeft[1] + bottomRight[1]) / 2;
+
+    return d3.zoomIdentity
+      .translate(width / 2, height / 2)
+      .scale(scale)
+      .translate(-cx, -cy);
+  }
+
   function renderMap(regionKey) {
     const region = REGIONS[regionKey];
     const regionSet = new Set(region.countries);
@@ -402,18 +420,9 @@
     svg.attr("viewBox", `0 0 ${width} ${height}`);
     svg.selectAll("*").remove();
 
-    const [[w, s], [e, n]] = region.bounds;
-    const bbox = {
-      type: "Feature",
-      geometry: {
-        type: "Polygon",
-        coordinates: [[[w, s], [e, s], [e, n], [w, n], [w, s]]],
-      },
-    };
-
     projection = d3.geoMercator().fitExtent(
-      [[20, 20], [width - 20, height - 20]],
-      bbox
+      [[0, 0], [width, height]],
+      { type: "Sphere" }
     );
     pathGenerator = d3.geoPath(projection);
 
@@ -429,13 +438,16 @@
       .attr("d", pathGenerator)
       .on("click", (_event, d) => handleClick(d));
 
+    const initialTransform = regionTransform(region, width, height);
+
     zoomBehavior = d3.zoom()
-      .scaleExtent([1, 12])
+      .scaleExtent([1, initialTransform.k * 8])
       .on("zoom", (event) => {
         mapGroup.attr("transform", event.transform);
       });
 
     svg.call(zoomBehavior);
+    svg.call(zoomBehavior.transform, initialTransform);
   }
 
   function handleClick(feature) {
@@ -543,7 +555,7 @@
   overlayButton.addEventListener("click", showMenu);
 
   window.addEventListener("resize", () => {
-    if (gameState === "playing" && currentRegionKey) {
+    if ((gameState === "playing" || gameState === "gameover" || gameState === "victory") && currentRegionKey) {
       const region = REGIONS[currentRegionKey];
 
       const container = document.getElementById("map-container");
@@ -552,24 +564,17 @@
 
       svg.attr("viewBox", `0 0 ${width} ${height}`);
 
-      const [[w, s], [e, n]] = region.bounds;
-      const bbox = {
-        type: "Feature",
-        geometry: {
-          type: "Polygon",
-          coordinates: [[[w, s], [e, s], [e, n], [w, n], [w, s]]],
-        },
-      };
-
       projection = d3.geoMercator().fitExtent(
-        [[20, 20], [width - 20, height - 20]],
-        bbox
+        [[0, 0], [width, height]],
+        { type: "Sphere" }
       );
       pathGenerator = d3.geoPath(projection);
 
       mapGroup.selectAll("path.country").attr("d", pathGenerator);
 
-      svg.call(zoomBehavior.transform, d3.zoomIdentity);
+      const t = regionTransform(region, width, height);
+      zoomBehavior.scaleExtent([1, t.k * 8]);
+      svg.call(zoomBehavior.transform, t);
     }
   });
 
