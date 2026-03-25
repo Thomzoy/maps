@@ -1,0 +1,233 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: #0f1117;
+    color: #e2e8f0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background: #1a1d2e;
+    border-bottom: 1px solid #2d3148;
+    z-index: 30;
+    height: 44px;
+}
+
+#prompt-text {
+    font-size: 1.15rem;
+    font-weight: 600;
+}
+
+#prompt-text .country-name {
+    color: #facc15;
+    font-size: 1.3rem;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+#score {
+    font-size: 0.9rem;
+    color: #64748b;
+    font-weight: 500;
+}
+
+#timer {
+    font-size: 1.2rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: #94a3b8;
+    min-width: 5ch;
+    text-align: right;
+}
+
+#timer.running {
+    color: #38bdf8;
+}
+
+#map-container {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    margin-top: 44px;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+#map .country {
+    fill: #2a2f45;
+    stroke: #3d4360;
+    stroke-width: 0.5px;
+    cursor: pointer;
+    transition: fill 0.15s ease;
+}
+
+#map .country:hover {
+    fill: #3b4163;
+}
+
+#map .country.inactive {
+    fill: #181b28;
+    stroke: #252840;
+    cursor: default;
+    pointer-events: none;
+}
+
+#map .country.inactive:hover {
+    fill: #181b28;
+}
+
+#map .country.found {
+    fill: #22c55e;
+    stroke: #16a34a;
+    cursor: default;
+    pointer-events: none;
+}
+
+#map .country.wrong {
+    fill: #ef4444;
+    stroke: #dc2626;
+}
+
+#map .country.correct-reveal {
+    fill: #facc15;
+    stroke: #eab308;
+    animation: pulse 0.6s ease-in-out 3;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+#region-selector {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(15, 17, 23, 0.95);
+    z-index: 10;
+    gap: 32px;
+}
+
+#region-selector.hidden {
+    display: none;
+}
+
+#region-selector h2 {
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+#region-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    max-width: 720px;
+    width: 90%;
+}
+
+#region-buttons button {
+    padding: 16px 20px;
+    font-size: 1rem;
+    font-weight: 600;
+    background: #1e2235;
+    color: #e2e8f0;
+    border: 1px solid #3d4360;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+#region-buttons button:hover {
+    background: #2a2f45;
+    border-color: #5b6280;
+    transform: translateY(-1px);
+}
+
+#overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(15, 17, 23, 0.88);
+    z-index: 20;
+    backdrop-filter: blur(4px);
+}
+
+#overlay.hidden {
+    display: none;
+}
+
+#overlay-content {
+    background: #1a1d2e;
+    border: 1px solid #2d3148;
+    border-radius: 16px;
+    padding: 40px 48px;
+    text-align: center;
+    max-width: 420px;
+    width: 90%;
+}
+
+#overlay-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+#overlay-title.victory {
+    color: #22c55e;
+}
+
+#overlay-title.defeat {
+    color: #ef4444;
+}
+
+#overlay-message {
+    font-size: 1rem;
+    color: #94a3b8;
+    line-height: 1.6;
+    margin-bottom: 28px;
+}
+
+#overlay-button {
+    padding: 12px 32px;
+    font-size: 1rem;
+    font-weight: 600;
+    background: #3b82f6;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+#overlay-button:hover {
+    background: #2563eb;
+}
