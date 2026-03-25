@@ -298,8 +298,7 @@
   const timerEl = document.getElementById("timer");
   const promptText = document.getElementById("prompt-text");
   const scoreEl = document.getElementById("score");
-  const regionSelector = document.getElementById("region-selector");
-  const regionButtonsEl = document.getElementById("region-buttons");
+  const regionSelect = document.getElementById("region-select");
   const overlay = document.getElementById("overlay");
   const overlayTitle = document.getElementById("overlay-title");
   const overlayMessage = document.getElementById("overlay-message");
@@ -332,46 +331,37 @@
     return `${m}:${s}`;
   }
 
+  function populateRegionSelect() {
+    for (const [key, region] of Object.entries(REGIONS)) {
+      const opt = document.createElement("option");
+      opt.value = key;
+      opt.textContent = region.label;
+      regionSelect.appendChild(opt);
+    }
+    regionSelect.value = "africa";
+
+    regionSelect.addEventListener("change", () => {
+      startGame(regionSelect.value);
+    });
+  }
+
   async function loadData() {
     promptText.textContent = "Chargement\u2026";
+    populateRegionSelect();
     try {
       const resp = await fetch(TOPO_URL);
       const topo = await resp.json();
       worldFeatures = topojson.feature(topo, topo.objects.countries).features;
-      showMenu();
+      startGame(regionSelect.value);
     } catch (err) {
       promptText.textContent = "Erreur de chargement. Rafraîchis la page.";
       console.error(err);
     }
   }
 
-  function showMenu() {
-    gameState = "menu";
-    promptText.textContent = "Choisis une région";
-    scoreEl.textContent = "";
-    timerEl.textContent = "00:00";
-    timerEl.classList.remove("running");
-    clearInterval(timerInterval);
-
-    const availableNames = new Set(worldFeatures.map((f) => f.properties.name));
-
-    regionButtonsEl.innerHTML = "";
-    for (const [key, region] of Object.entries(REGIONS)) {
-      const count = region.countries.filter((c) => availableNames.has(c)).length;
-      const btn = document.createElement("button");
-      btn.textContent = `${region.label} (${count})`;
-      btn.addEventListener("click", () => startGame(key));
-      regionButtonsEl.appendChild(btn);
-    }
-
-    regionSelector.classList.remove("hidden");
-    overlay.classList.remove("bottom-banner");
-    overlay.classList.add("hidden");
-    svg.selectAll("*").remove();
-  }
-
   function startGame(regionKey) {
     currentRegionKey = regionKey;
+    regionSelect.value = regionKey;
     const region = REGIONS[regionKey];
 
     const availableNames = new Set(worldFeatures.map((f) => f.properties.name));
@@ -384,7 +374,7 @@
     elapsedSeconds = 0;
     clearInterval(timerInterval);
 
-    regionSelector.classList.add("hidden");
+    overlay.classList.remove("bottom-banner");
     overlay.classList.add("hidden");
 
     renderMap(regionKey);
@@ -467,6 +457,13 @@
         .filter((d) => d.properties.name === name)
         .classed("found", true);
 
+      const centroid = pathGenerator.centroid(feature);
+      mapGroup.append("text")
+        .attr("class", "country-label")
+        .attr("x", centroid[0])
+        .attr("y", centroid[1])
+        .text(fr(name));
+
       updateScore();
 
       if (remaining.length === 0) {
@@ -548,7 +545,9 @@
     overlay.classList.remove("hidden");
   }
 
-  overlayButton.addEventListener("click", showMenu);
+  overlayButton.addEventListener("click", () => {
+    startGame(currentRegionKey);
+  });
 
   window.addEventListener("resize", () => {
     if ((gameState === "playing" || gameState === "gameover" || gameState === "victory") && currentRegionKey) {

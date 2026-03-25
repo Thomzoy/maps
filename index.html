@@ -8,7 +8,10 @@
 </head>
 <body>
     <header>
-        <span id="prompt-text">Choisis une région</span>
+        <div class="header-left">
+            <select id="region-select"></select>
+            <span id="prompt-text"></span>
+        </div>
         <div class="header-right">
             <span id="score"></span>
             <span id="timer">00:00</span>
@@ -17,11 +20,6 @@
 
     <div id="map-container">
         <svg id="map"></svg>
-    </div>
-
-    <div id="region-selector">
-        <h2>Choisis une région</h2>
-        <div id="region-buttons"></div>
     </div>
 
     <div id="overlay" class="hidden">
