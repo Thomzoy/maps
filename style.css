@@ -115,26 +115,23 @@ header {
 #map .country {
     fill: #2a2f45;
     stroke: #3d4360;
-    stroke-width: 0.2px;
+    stroke-width: 0.1px;
     cursor: pointer;
     transition: fill 0.15s ease;
 }
 
 #map .country-label {
     fill: #fff;
-    font-size: 3px;
+    font-size: 1px;
     font-weight: 600;
     text-anchor: middle;
     dominant-baseline: central;
     pointer-events: none;
     paint-order: stroke;
-    stroke: rgba(0, 0, 0, 0.6);
-    stroke-width: 1px;
-    stroke-linejoin: round;
-}
-
-#map .country:hover {
-    fill: #3b4163;
+    opacity: 0.5;
+    /* stroke: rgba(0, 0, 0, 0.6); */
+    /* stroke-width: 1px; */
+    /* stroke-linejoin: round; */
 }
 
 #map .country.inactive {
