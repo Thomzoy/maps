@@ -365,6 +365,7 @@
     }
 
     regionSelector.classList.remove("hidden");
+    overlay.classList.remove("bottom-banner");
     overlay.classList.add("hidden");
     svg.selectAll("*").remove();
   }
@@ -521,18 +522,12 @@
     overlayTitle.textContent = "Perdu !";
     overlayTitle.className = "defeat";
     overlayMessage.innerHTML =
-      "Tu as cliqué sur <strong>" +
-      fr(clickedName) +
-      "</strong> au lieu de <strong>" +
-      fr(currentTarget) +
-      "</strong>.<br>" +
-      "Score : " +
-      found.size +
-      " / " +
-      totalCount +
-      " en " +
-      formatTime(elapsedSeconds);
+      "<strong>" + fr(clickedName) + "</strong> au lieu de <strong>" +
+      fr(currentTarget) + "</strong> — " +
+      found.size + " / " + totalCount +
+      " en " + formatTime(elapsedSeconds);
     overlayButton.textContent = "Réessayer";
+    overlay.classList.add("bottom-banner");
     overlay.classList.remove("hidden");
   }
 
@@ -540,6 +535,7 @@
     gameState = "victory";
     stopTimer();
 
+    overlay.classList.remove("bottom-banner");
     overlayTitle.textContent = "Victoire !";
     overlayTitle.className = "victory";
     overlayMessage.innerHTML =

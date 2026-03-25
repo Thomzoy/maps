@@ -195,6 +195,43 @@ header {
     display: none;
 }
 
+#overlay.bottom-banner {
+    inset: auto 0 0 0;
+    background: none;
+    backdrop-filter: none;
+    align-items: flex-end;
+    pointer-events: none;
+}
+
+#overlay.bottom-banner #overlay-content {
+    max-width: 100%;
+    width: 100%;
+    border-radius: 16px 16px 0 0;
+    padding: 20px 24px;
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    text-align: left;
+}
+
+#overlay.bottom-banner #overlay-title {
+    margin-bottom: 0;
+    font-size: 1.1rem;
+    white-space: nowrap;
+}
+
+#overlay.bottom-banner #overlay-message {
+    margin-bottom: 0;
+    font-size: 0.9rem;
+    flex: 1;
+    min-width: 0;
+}
+
+#overlay.bottom-banner #overlay-button {
+    flex-shrink: 0;
+}
+
 #overlay-content {
     background: #1a1d2e;
     border: 1px solid #2d3148;
