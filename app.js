@@ -480,7 +480,7 @@
     gameState = "playing";
     currentTarget = remaining.pop();
     promptText.innerHTML =
-      'Trouve : <span class="country-name">' + fr(currentTarget) + "</span>";
+      '<span class="country-name">' + fr(currentTarget) + "</span> ?";
     updateScore();
   }
 

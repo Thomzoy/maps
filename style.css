@@ -44,8 +44,8 @@ header {
 }
 
 #region-select {
-    padding: 6px 10px;
-    font-size: 0.9rem;
+    padding: 4px 6px;
+    font-size: 0.8rem;
     font-weight: 600;
     background: #2a2f45;
     color: #e2e8f0;
@@ -54,6 +54,7 @@ header {
     cursor: pointer;
     outline: none;
     flex-shrink: 0;
+    max-width: 100px;
 }
 
 #region-select:focus {
@@ -63,13 +64,10 @@ header {
 #prompt-text {
     font-size: 1.15rem;
     font-weight: 600;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 
 #prompt-text .country-name {
-    color: #facc15;
+    color: #ffffff;
     font-size: 1.3rem;
 }
 
@@ -87,7 +85,7 @@ header {
 }
 
 #timer {
-    font-size: 1.2rem;
+    font-size: 1rem;
     font-weight: 700;
     font-variant-numeric: tabular-nums;
     color: #94a3b8;
