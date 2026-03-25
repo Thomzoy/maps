@@ -316,7 +316,7 @@
   let timerInterval = null;
 
   const svg = d3.select("#map");
-  let projection, pathGenerator;
+  let projection, pathGenerator, zoomBehavior, mapGroup;
 
   function shuffle(arr) {
     for (let i = arr.length - 1; i > 0; i--) {
@@ -417,7 +417,9 @@
     );
     pathGenerator = d3.geoPath(projection);
 
-    svg
+    mapGroup = svg.append("g");
+
+    mapGroup
       .selectAll("path.country")
       .data(worldFeatures)
       .join("path")
@@ -426,6 +428,14 @@
       )
       .attr("d", pathGenerator)
       .on("click", (_event, d) => handleClick(d));
+
+    zoomBehavior = d3.zoom()
+      .scaleExtent([1, 12])
+      .on("zoom", (event) => {
+        mapGroup.attr("transform", event.transform);
+      });
+
+    svg.call(zoomBehavior);
   }
 
   function handleClick(feature) {
@@ -439,7 +449,7 @@
 
     if (name === currentTarget) {
       found.add(name);
-      svg
+      mapGroup
         .selectAll("path.country")
         .filter((d) => d.properties.name === name)
         .classed("found", true);
@@ -486,12 +496,12 @@
     gameState = "gameover";
     stopTimer();
 
-    svg
+    mapGroup
       .selectAll("path.country")
       .filter((d) => d.properties.name === clickedName)
       .classed("wrong", true);
 
-    svg
+    mapGroup
       .selectAll("path.country")
       .filter((d) => d.properties.name === currentTarget)
       .classed("correct-reveal", true);
@@ -557,9 +567,18 @@
       );
       pathGenerator = d3.geoPath(projection);
 
-      svg.selectAll("path.country").attr("d", pathGenerator);
+      mapGroup.selectAll("path.country").attr("d", pathGenerator);
+
+      svg.call(zoomBehavior.transform, d3.zoomIdentity);
     }
   });
+
+  document.addEventListener("gesturestart", (e) => e.preventDefault());
+  document.addEventListener("gesturechange", (e) => e.preventDefault());
+  document.addEventListener("gestureend", (e) => e.preventDefault());
+  document.addEventListener("touchmove", (e) => {
+    if (e.touches.length > 1) e.preventDefault();
+  }, { passive: false });
 
   loadData();
 })();
